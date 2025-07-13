@@ -1,0 +1,33 @@
+
+Commands:
+  build       Build an image from a Dockerfile
+  history     Show the history of an image
+  import      Import the contents from a tarball to create a filesystem image
+  inspect     Display detailed information on one or more images
+  load        Load an image from a tar archive or STDIN
+  ls          List images
+  prune       Remove unused images
+  pull        Download an image from a registry
+  push        Upload an image to a registry
+  rm          Remove one or more images
+  save        Save one or more images to a tar archive (streamed to STDOUT by default)
+  tag         Create a tag TARGET_IMAGE that refers to SOURCE_IMAGE
+
+
+Image level Commands :
+=====================
+1) docker pull nginx---> To pull image from registry.
+2) docker images or image ls == To list images 
+3) docker inspect nginx == to display detailed info about image
+4) docker rmi nginx == TO remove image
+5)docker prune == 
+
+Container level Commands : 
+========================
+1) docker create --name webapp01 nginx ==> To create a container from image
+2) docker start webapp01 == start Container
+3) docker stop webapp01 == stop a container
+4) docker rm webapp01 == remove container
+3) docker ps == list running containers
+4)docker ps -a == list all running & stopped state containers
+5) docker exec -it webapp01 /bin/sh
