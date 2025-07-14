@@ -1,0 +1,19 @@
+docker pull ubuntu ==   To Pull image 
+docker create --name osapp01 ubuntu == To create container
+docker start osapp01
+This command starts the container, but if the container has nothing to do (no foreground process), 
+it will:
+
+✅ Start
+⏳ Run default command (/bin/bash or similar)
+🛑 Immediately exit — because there's no terminal or process keeping it alive
+
+docker run -it --name osapp01 ubuntu == i will connect and log into the default shell and exited once we are out
+container is also stopped
+
+docker run -dit --name osapp02 ubuntu == it will run container in the background. and you can do exec  later also
+-d == detached mode 
+-it == interactive mode 
+
+docker attach osapp01 == attach to the already running container shell and container stopped once we exit from terminal 
+docker start -ai osapp01 == start and attach to it. stopped once exit from shell
