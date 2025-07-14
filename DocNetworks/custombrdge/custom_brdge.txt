@@ -1,0 +1,14 @@
+with default bridge you can access the other containers in the same bridge with ip address 
+
+docker exec -u root -it webapp01 bash
+apt update
+apt install iputils-ping -y
+
+create a custom bridge if want DNS resolution 
+
+docker network create --driver bridge my_bridge
+docker network ls
+
+
+docker run -dit --name httpd02 --net=my_bridge httpd
+ docker exec -it web01 ping httpd02 == works but both should be part of same network
