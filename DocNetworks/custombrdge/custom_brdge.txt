@@ -12,3 +12,8 @@ docker network ls
 
 docker run -dit --name httpd02 --net=my_bridge httpd
  docker exec -it web01 ping httpd02 == works but both should be part of same network
+
+ docker network disconnect bridge webhttpd01
+
+ docker network connect my_bridge webhttpd01
+
