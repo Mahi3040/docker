@@ -1,0 +1,87 @@
+Docker leverages several core Linux features to run containers efficiently and securely. Here's a breakdown of the most important ones and how Docker uses them:
+
+🧠 1. Namespaces – Isolation
+Purpose: Isolate resources between containers and the host system.
+
+Types of namespaces Docker uses:
+
+Namespace Type	What it isolates
+pid	         Process IDs
+net	         Network interfaces, IPs
+mnt	         Filesystems and mount points
+uts	         Hostname and domain name
+ipc	         Inter-process communication
+user         User and group IDs
+
+🔧 Docker usage:
+Each container gets its own isolated view of processes, network stack, filesystem, etc.
+
+🧱 2. Control Groups (cgroups) – Resource Limiting
+Purpose: Limit and prioritize resource usage (CPU, memory, disk I/O).
+
+Docker usage:
+
+You can set memory or CPU limits for containers using flags:
+
+docker run --memory="500m" --cpus="1" ubuntu
+🧾 3. Union File Systems / OverlayFS – Layered Filesystems
+Purpose: Efficient storage by layering images.
+
+Docker usage:
+
+Images are composed of multiple read-only layers.
+
+Containers add a writable layer on top (using OverlayFS).
+
+Saves space and speeds up image creation.
+
+🔒 4. Capabilities – Fine-grained Security
+Purpose: Limit the privileges of containerized processes.
+
+Docker usage:
+
+Containers drop unnecessary Linux capabilities by default (like raw socket access).
+
+You can add/drop specific capabilities if needed:
+
+docker run --cap-drop ALL --cap-add NET_ADMIN ubuntu
+🔧 5. Chroot / pivot_root – Filesystem Isolation
+Purpose: Change the root directory for a process, isolating its view of the filesystem.
+
+Docker usage:
+
+Combined with namespaces to give containers their own filesystem view.
+
+pivot_root is often used internally to switch to the container's rootfs.
+
+🧩 6. Seccomp (Secure Computing Mode) – Syscall Filtering
+Purpose: Restrict which system calls a container can use.
+
+Docker usage:
+
+Docker uses a default seccomp profile to block dangerous syscalls.
+
+You can customize it:
+
+docker run --security-opt seccomp=custom.json ubuntu
+🔐 7. AppArmor / SELinux – Mandatory Access Control (MAC)
+Purpose: Enforce security policies on what processes can access.
+
+Docker usage:
+
+Provides another layer of security.
+
+Works with container runtimes to prevent containers from accessing unauthorized resources.
+=========================================
+
+
+> docker search nginx === The docker search nginx command is used to search for Docker images related to nginx on Docker Hub,
+ the default public container registry.
+ docker pull <image name> :<tag name> == To pull image
+ docker pull repository name /<image name>
+ docker login == to login docker hub to get private images
+ docker ps == all running process (Containers)
+ docker attach web01 ===> here directly attached to main proccess
+ exec== need to pass logging command 
+ attach == No need to pass it
+ docker st
