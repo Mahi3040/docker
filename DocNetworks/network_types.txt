@@ -1,0 +1,84 @@
+There are 3 Types of networks
+    1)Host
+    2)Brdige 
+    3)None
+ 1)Host
+ ======
+Host Network Mode in Docker (especially on Windows):
+🧠 What is --network host?
+In Linux, --network host lets the container share the host’s network stack directly.
+The container acts as if it is running on the host itself — same IP, same ports.
+So, services running in the container (e.g., Nginx on port 80) are accessible via the host’s IP.
+
+🚫 But Why It Fails on Windows?
+Because Docker on Windows doesn't run natively — it runs inside a Linux virtual machine (VM) using WSL2 or Hyper-V.
+
+So:
+When you use --network=host in Windows, you are:
+✅ sharing the VM's network with the container
+❌ not sharing your actual Windows host's network
+
+💥 Result:
+The container is reachable inside the Linux VM, not from your Windows browser or apps.
+That’s why accessing http://localhost:80 or your Windows IP like 172.x.x.x fails.
+You’ll get: Connection refused or Site can’t be reached.
+
+
+What is bridge network?
+========================
+The bridge network is Docker’s default network mode for containers.
+
+When you run a container without specifying a network, it connects to an internal virtual bridge that Docker creates.
+
+⚙️ What happens in bridge mode?
+Your container gets its own private IP inside Docker’s virtual network.
+
+It can access the internet, but the host (your Windows system) can’t directly access the container’s private IP.
+
+So, to access a service (like Nginx) from your Windows browser, you must publish the port using -p.
+
+🔧 Example:
+docker run -d -p 8080:80 nginx
+Side	What Happens
+Container	Runs Nginx on port 80 inside its network
+Docker	Forwards port 8080 on your laptop → container port 80
+Windows Host	Can access Nginx at http://localhost:8080
+
+💡 Why this works on Windows:
+Docker Desktop uses port forwarding to expose container services to your host machine. This is fully supported in bridge mode with -p.
+
+❗What if you don’t use -p?
+docker run -d nginx
+The container still runs, but no port is published to your host.
+
+So trying http://localhost won’t work, because nothing is listening there.
+
+📝 Summary:
+Network Mode	Access From Host?	 Use on Windows?	      Notes
+bridge	       ✅ Yes (with -p)	    ✅ Yes	Default;     use -p to expose ports
+host	      ❌ No (on Windows)	   ❌ Not supported	 Works only on native Linux hosts
+
+
+Docker Network Mode: none
+==========================
+
+When you run a container with --network=none, you are disabling all network access for that container.
+
+🔍 What it means:
+❌ No internet
+
+❌ No communication with host
+
+❌ No communication with other containers
+
+✅ Only loopback (localhost) inside the container works
+
+Why use it?
+
+You might use --network=none when:
+
+You want a completely isolated container (for security or testing)
+
+You're only doing local file operations or scripting
+
+You don't want the container to leak data or access internet
