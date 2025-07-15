@@ -29,6 +29,7 @@ Container level Commands :
 3) docker stop webapp01 == stop a container
 4) docker rm webapp01 == remove container
 3) docker ps == list running containers
+<<<<<<< HEAD
 4)docker ps -a == list all running & stopped state containers
 
 5) docker exec -it webapp01 /bin/sh
@@ -36,3 +37,6 @@ Container level Commands :
 7) docker network ls == to list networks
 8) docker inspect bridge == see the bridge details.
 9)
+=======
+4)docker ps -a == list all running & stopped state containers
+>>>>>>> 2645f03c1fc67546cd634a64842ddadf341cacc8
