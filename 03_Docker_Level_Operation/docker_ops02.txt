@@ -1,0 +1,7 @@
+Using docker commit is great for quick image creation or debugging, but it's not best
+practice for production. Instead: 
+Use a Dockerfile for reproducibility
+Keep your builds version-controlled
+
+docker commit webapp01 == create  image from running/stopped container 
+docker cp <source file path> container name:< container folder name > 

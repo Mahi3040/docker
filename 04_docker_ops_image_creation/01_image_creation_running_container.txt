@@ -1,0 +1,66 @@
+Creating a contianer with runnig image.
+step 1
+ docker puull nginx
+step 2
+ docker run -dit --name web01 nginx
+step 3
+ docker exec -it web01 bin/sh
+step 4 
+ mkdir test (folder)
+step 5
+ touch test.txt(file)
+step 6(exit)
+docker commit web01 web01image:v1
+
+step 7 
+docker run -dit web02 web01image:v1
+step 8 
+ docker exec -it web02 bin/sh
+step 9 
+ check here find new folder and test.txt file.
+
+
+
+ Problems and Risks
+1. Lacks Reproducibility
+A docker commit image is based on what's currently inside the container, not from a Dockerfile.
+
+No record of how the container reached that state.
+
+You can’t reproduce the image exactly without manually repeating steps.
+
+2. No Version Control / History
+Dockerfile-based images have clear instructions (RUN, COPY, etc.).
+
+docker commit doesn't preserve build history, so debugging or upgrading is hard.
+
+3. Inconsistent Environments
+If you manually installed packages or made changes inside the running container, they may differ across environments (e.g., different OS, base image, package versions).
+
+You risk creating snowflake servers—containers that work only because of unknown/unrepeatable changes.
+
+4. Larger Image Size
+Committed images may include unnecessary layers or data, because it saves everything in the container state (even temp files, logs, caches).
+
+5. Security and Compliance Issues
+Without a Dockerfile, it's hard to audit what's inside the image.
+
+It may contain sensitive or temporary data (passwords, logs, etc.).
+
+✅ When it might be acceptable
+Prototyping or saving a quick test environment.
+
+Capturing a “snapshot” before shutting down.
+
+Manual debugging or emergency fixes.
+
+✅ Best Practice
+Use a Dockerfile to define your image:
+
+Clear, repeatable instructions.
+
+Version control.
+
+Easier to share across team members or CI/CD pipelines. 
+
+
