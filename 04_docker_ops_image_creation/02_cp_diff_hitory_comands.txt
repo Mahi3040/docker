@@ -1,0 +1,33 @@
+Copying file from local system to a contianer
+
+docker cp c:/test/filename.txt web01:/test
+
+To check the operations perfomed by the system and  user after container creation 
+docker diff web01
+
+Note:
+We have docker file locally and image is created. (tracking is fine about image is created ).
+but what if we pushed image to repository and someone downlaods and use then how do they know how image is created.
+for this problem we have solution 
+
+comand 
+docker history image name (lists Dockerfile instructions)
+
+docker logs container name 
+
+docker inspect container name 
+
+cleaning commands :
+================
+docker rm web01
+
+docker rmi nginx
+
+docker image prune === remove all unused/corrupted images 
+
+docker network prune 
+docker volume prune
+docker system prune - stopped containers and images , net , volumes
+
+
+
