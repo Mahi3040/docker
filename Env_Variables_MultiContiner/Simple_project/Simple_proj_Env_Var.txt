@@ -1,0 +1,8 @@
+MongoDB
+=======
+docker run -dit --name mangodb -p 27017:27017 -e MONGO_INITDB_ROOT_USERNAME = dbadmin
+-e MONGO_INITDB_ROOT_PASSWORD= dbpass -v mongo_vol:/data/db --net=my_bridge mongo
+
+Mongo-express
+=========
+docker run -dit  --net=my_bridge   -p 8082:8081  --name mongoweb -e ME_CONFIG_MONGODB_URL="mongodb://dbadmin:dbpass@mongodb01:27017/" -e ME_CONFIG_BASICAUTH_USERNAME=webuser -e ME_CONFIG_BASICAUTH_PASSWORD=webpass mongo-express

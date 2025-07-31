@@ -1,0 +1,55 @@
+The purpose of environment variables in Docker is to make containers configurable, flexible, and portable. Here's why they are important:
+
+🎯 Key Purposes
+Configuration Management
+
+You can pass settings like database URLs, API keys, or app modes (development, production) without changing the code or image.
+Example: DB_HOST=localhost, APP_ENV=production
+
+Separation of Concerns
+
+Keeps your application logic separate from configuration.
+Makes it easier to deploy the same image in different environments (dev, test, prod).
+
+Security
+
+Sensitive data like passwords or tokens can be injected at runtime instead of being hardcoded.
+Though for highly sensitive data, consider using Docker secrets or external secret managers.
+
+Portability
+
+You can use the same Docker image across different systems or cloud environments by just changing the environment variables.
+
+Automation & CI/CD
+
+Environment variables are commonly used in CI/CD pipelines to pass build-time or deployment-time parameters.
+Dynamic Behavior
+
+Applications can behave differently based on the values of environment variables, enabling feature toggles or conditional logic.
+
+
+docker run -dit --name web05 --env USERNAME=dbuser --env password=pass123 nginx
+
+docker exec -it web05 env
+
+prblems here 
+===========
+1) visibility when they do exec
+2) disable docker exec
+3) Encrypt Values 
+4) store and use from centralized place KV, AKV.
+
+To  create a env variables in docker server
+env
+
+export test_var1=testval
+
+echo $test_var1
+
+
+above method is usefull for one or two but bulk then use txt file.
+
+env-var.txt
+
+docker run -dit --name web01 --env-file env-vars.txt nginx
+

@@ -1,0 +1,146 @@
+Project structure
+=================
+
+myapp/
+│
+├── docker-compose.yml
+├── .env
+├── backend/
+│   └── Dockerfile
+├── frontend/
+│   └── Dockerfile
+└── db/ (optional)
+    └── init.sql
+
+| Level                                                   | Indentation |
+| ------------------------------------------------------- | ----------- |
+| Top-level keys (`version`, `services`)                  | 0 spaces    |
+| Service names (`web`, `db`)                             | 2 spaces    |
+| Config under services (`image`, `ports`, `environment`) | 4 spaces    |
+| List items (`- "80:80"`, `- ENV=value`)                 | 6 spaces    |
+
+
+6. Pro Tips
+Use depends_on to define startup order
+
+Use build: . to build custom Dockerfiles per service
+
+Combine docker-compose -f for multiple environments (override, prod, dev)
+
+
+Top-Level Keys (docker-compose.yml)
+These go at the root level of the file:
+
+| Key        | Description                          |
+| ---------- | ------------------------------------ |
+| `version`  | Compose file version (e.g., `'3.8'`) |
+| `services` | Defines all containers               |
+| `volumes`  | Named/shared volumes for persistence |
+| `networks` | Custom networks between services     |
+| `configs`  | Configuration files (for Swarm)      |
+| `secrets`  | Store sensitive data (Swarm mode)    |
+
+
+✅ Under services:
+Each service (container) can include the following:
+
+🔹 Basic Configuration
+
+| Key              | Example                   | Purpose                  |
+| ---------------- | ------------------------- | ------------------------ |
+| `image`          | `nginx:latest`            | Docker image to run      |
+| `build`          | `.` or `./app`            | Path to Dockerfile       |
+| `container_name` | `myapp_web`               | Custom container name    |
+| `command`        | `npm start`               | Override default CMD     |
+| `entrypoint`     | `["sh", "entrypoint.sh"]` | Custom entrypoint script |
+
+
+🔹 Ports, Volumes, and Networking
+
+| Key        | Example          | Purpose                      |
+| ---------- | ---------------- | ---------------------------- |
+| `ports`    | `"8080:80"`      | Host\:container port mapping |
+| `volumes`  | `- ./data:/data` | Bind or named volumes        |
+| `networks` | `- backend`      | Attach to network(s)         |
+
+🔹 Environment and Variables
+| Key           | Example                 | Purpose                 |
+| ------------- | ----------------------- | ----------------------- |
+| `environment` | `- NODE_ENV=production` | Set env vars            |
+| `env_file`    | `.env`                  | Load env vars from file |
+| `secrets`     | `- db_password`         | Secure secrets (Swarm)  |
+
+
+🔹 Dependency & Startup
+| Key           | Example                      | Purpose                                                     |
+| ------------- | ---------------------------- | ----------------------------------------------------------- |
+| `depends_on`  | `- db`                       | Ensure service starts first (note: no wait-for-ready logic) |
+| `healthcheck` | See below                    | Monitor container health                                    |
+| `restart`     | `always`, `on-failure`, etc. | Auto-restart policy                                         |
+
+
+yaml
+Copy
+Edit
+healthcheck:
+  test: ["CMD", "curl", "-f", "http://localhost"]
+  interval: 30s
+  timeout: 10s
+  retries: 5
+
+🔹 User and Permissions
+| Key          | Example     | Purpose                          |
+| ------------ | ----------- | -------------------------------- |
+| `user`       | `1000:1000` | Run container as a specific user |
+| `privileged` | `true`      | Run with extra system privileges |
+
+
+🔹 Resource Limits
+| Key         | Example        | Purpose                   |
+| ----------- | -------------- | ------------------------- |
+| `mem_limit` | `512m`         | Memory cap                |
+| `cpus`      | `0.5`          | CPU share                 |
+| `deploy`    | For Swarm mode | Replicas, placement, etc. |
+
+
+🔹 DNS, Hostnames
+| Key        | Example      | Purpose             |
+| ---------- | ------------ | ------------------- |
+| `hostname` | `mydb.local` | Custom hostname     |
+| `dns`      | `8.8.8.8`    | Custom DNS resolver |
+
+
+🔹 Logging and Debugging
+| Key                 | Example               | Purpose                                       |
+| ------------------- | --------------------- | --------------------------------------------- |
+| `logging`           | `driver: "json-file"` | Customize logging driver                      |
+| `stdin_open`, `tty` | `true`                | Keep container interactive (e.g., for shells) |
+
+
+🔹 Platform & OS
+| Key        | Example       | Purpose                                           |
+| ---------- | ------------- | ------------------------------------------------- |
+| `platform` | `linux/amd64` | Set target architecture (esp. for Apple M1 users) |
+
+
+
+Less Common or Advanced Compose Keys (for completeness)
+
+| Key            | Example                                 | Purpose                                         | Notes                                 |
+| -------------- | --------------------------------------- | ----------------------------------------------- | ------------------------------------- |
+| `cap_add`      | `- NET_ADMIN`                           | Add Linux capabilities to a container           | For low-level network or sysadmin ops |
+| `cap_drop`     | `- ALL`                                 | Drop all capabilities                           | Enhance security                      |
+| `security_opt` | `- no-new-privileges:true`              | Apply security policies (like AppArmor/SELinux) | Advanced                              |
+| `sysctls`      | `net.core.somaxconn: 1024`              | Tune kernel parameters inside container         | Mostly for performance tuning         |
+| `extra_hosts`  | `- "myhost:192.168.1.100"`              | Inject custom DNS entries into container        | Useful for local testing              |
+| `devices`      | `- "/dev/snd:/dev/snd"`                 | Mount physical host devices                     | Used with audio, USB, etc.            |
+| `ulimits`      | `nofile: 65535`                         | Set user resource limits                        | Performance and process management    |
+| `tmpfs`        | `/run` or `/tmp`                        | Mount tmpfs (RAM-only storage)                  | Use for high-speed scratch space      |
+| `group_add`    | `- "dialout"`                           | Add container to specific Linux groups          | e.g., access serial devices           |
+| `ipc`          | `host`                                  | Share host's IPC namespace                      | Inter-process communication           |
+| `pid`          | `host`                                  | Share host’s PID namespace                      | Can see host processes                |
+| `shm_size`     | `512m`                                  | Size of `/dev/shm` shared memory                | For apps like Chrome, PostgreSQL      |
+| `init`         | `true`                                  | Run an init system inside container             | Helps with zombie processes           |
+| `isolation`    | `process`                               | Windows-specific container isolation            | Rare unless on Windows Server         |
+| `runtime`      | `nvidia`                                | Use alternative runtimes (e.g., NVIDIA GPU)     | For GPU containers                    |
+| `labels`       | `com.example.description: "my service"` | Add metadata for use in orchestration           | Useful with Traefik, Swarm, etc.      |

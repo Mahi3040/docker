@@ -1,0 +1,38 @@
+services:
+  mongodb:
+    image: mongo
+    container_name: mongodb01
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: dbadmin
+      MONGO_INITDB_ROOT_PASSWORD: dbpass
+    networks:
+      - my_bridge
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_vol:/data/db
+
+
+  mongo-express:
+    depends_on:
+      - mongodb
+    image: mongo-express
+    container_name: mongoweb
+    environment:
+      ME_CONFIG_MONGODB_URL: mongodb://dbadmin:dbpass@mongodb:27017/
+      ME_CONFIG_BASICAUTH_USERNAME: webuser
+      ME_CONFIG_BASICAUTH_PASSWORD: webpass
+    networks:
+      - my_bridge
+    ports:
+      - 8082:8081
+
+networks:
+  my_bridge:
+    driver: bridge
+    external: true
+
+volumes:
+  mongo_vol:
+    external: true
+
